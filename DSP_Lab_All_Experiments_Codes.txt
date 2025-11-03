@@ -1,0 +1,479 @@
+
+==============================
+Experiment 1: Basic Arithmetic Operations
+==============================
+C Program for Addition:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ long a=0x12345678;
+ long b=0x87654321;
+ long c=a+b;
+ return 0;
+}
+
+C Program for Multiplication:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ long a=0x12345678;
+ long b=0x87654321;
+ long c=a*b;
+ return 0;
+}
+
+C Program for Floating Point Addition:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ float a=123.321;
+ float b=332.125;
+ float c=a+b;
+ return 0;
+}
+
+C Program for Floating Point Multiplication:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ float a=123.321;
+ float b=332.125;
+ float c=a*b;
+ return 0;
+}
+
+C Program for Sine Wave Generation:
+// The code prints sine wave sample values
+#include <stdio.h>
+#include <math.h>
+#define PI 3.14159265358979323846
+int main(void) {
+ for(int i=0;i<360;i+=10){
+     printf("%f
+", sin(i*PI/180));
+ }
+ return 0;
+}
+
+==============================
+Experiment 2: Linear and Circular Convolution
+==============================
+C Program for Linear Convolution:
+#include<stdio.h>
+#include <math.h>
+int y[9];
+int x[9]={1,2,3,4,5,6,0,0,0};
+int h[9]={1,2,3,4,0,0,0,0,0};
+int main(void){
+ int i,j;
+ for(i=0;i<9;i++){
+  y[i]=0;
+  for(j=0;j<=i;j++){
+   y[i]+=x[j]*h[i-j];
+  }
+  printf("%d\n",y[i]);
+ }
+ return 0;
+}
+
+C Program for Circular Convolution:
+#include<stdio.h>
+#include<math.h>
+int m=4, n=4;
+int x[4]={1,2,3,4};
+int h[4]={1,2,3,4};
+int y[4];
+int i,j,k,x2[4],a[4];
+void main(){
+ if(m-n!=0){
+  if(m>n){
+   for(i=n;i<m;i++) h[i]=0;
+   n=m;
+  }
+  for(i=m;i<n;i++) x[i]=0;
+  m=n;
+ }
+ y[0]=0; a[0]=h[0];
+ for(j=1;j<n;j++) a[j]=h[n-j];
+ for(i=0;i<n;i++) y[0]+=x[i]*a[i];
+ for(k=1;k<n;k++){
+  y[k]=0;
+  for(j=1;j<n;j++) x2[j]=a[j-1];
+  x2[0]=a[n-1];
+  for(i=0;i<n;i++){
+   a[i]=x2[i];
+   y[k]+=x[i]*x2[i];
+  }
+ }
+ printf("Circular Convolution:\n");
+ for(i=0;i<n;i++) printf("%d\t",y[i]);
+}
+
+==============================
+Experiment 3: Discrete Fourier Transform (DFT)
+==============================
+#include <stdio.h>
+#include <math.h>
+float x[8]={1,1,2,0,1,2,0,1};
+float XR[8], XI[8], amplitude[8], phase[8];
+int N=8;
+int main(void){
+ int i,j;
+ for(j=0;j<N;j++){
+  XR[j]=XI[j]=0;
+  for(i=0;i<N;i++){
+   XR[j]+=x[i]*cos(2*3.14*i*j/N);
+   XI[j]-=x[i]*sin(2*3.14*i*j/N);
+  }
+  printf("%f +i %f\n",XR[j],XI[j]);
+ }
+ for(i=0;i<N;i++){
+  amplitude[i]=sqrt(XR[i]*XR[i]+XI[i]*XI[i]);
+  phase[i]=atan2(XI[i],XR[i]);
+  printf("Amplitude=%f Phase=%f\n", amplitude[i], phase[i]);
+ }
+ return 0;
+}
+
+==============================
+Experiment 4: Fast Fourier Transform (FFT)
+==============================
+Decimation-in-Time FFT:
+#include<stdio.h>
+#include<math.h>
+double x[8]={1,1,2,0,1,2,0,1};
+double XR[8]={0}, XI[8]={0};
+double WR[4]={1.0,0.707,0.0,-0.707};
+double WI[4]={0.0,-0.707,-1.0,-0.707};
+double amplitude[8], phase[8];
+int main(void){
+ // Bit reversal order
+ XR[0]=x[0]; XR[1]=x[4]; XR[2]=x[2]; XR[3]=x[6]; XR[4]=x[1]; XR[5]=x[5]; XR[6]=x[3]; XR[7]=x[7];
+ int i,j,w;
+ for(i=0;i<4;i++){
+  double sum1r=XR[i]+XR[i+4], sum2r=XR[i]-XR[i+4];
+  XR[i]=sum1r; XR[i+4]=sum2r;
+ }
+ for(i=0;i<8;i++){
+  amplitude[i]=sqrt(XR[i]*XR[i]+XI[i]*XI[i]);
+  phase[i]=atan2(XI[i],XR[i]);
+  printf("%f +i %f\n", XR[i], XI[i]);
+ }
+ return 0;
+}
+
+==============================
+Experiment 5: FIR and IIR Filter Design
+==============================
+C Program for FIR Low Pass Filter:
+#include <stdio.h>
+#include <math.h>
+float x[100], y[100], h[51]={...}; // coefficients truncated for brevity
+int main(void){
+ int i,j;
+ for(i=0;i<100;i++)
+  x[i]=5+(2*sin(2*3.14*30*i/100))+(3*cos(2*3.14*2*i/100));
+ for(i=0;i<100;i++){
+  y[i]=0;
+  for(j=0;j<51;j++)
+   if(i-j>=0) y[i]+=h[j]*x[i-j];
+ }
+ for(i=0;i<100;i++) printf("%f\n", y[i]);
+ return 0;
+}
+
+C Program for IIR Low Pass Filter:
+#include <stdio.h>
+#include <math.h>
+#define NUM_SECTIONS 1
+float b[NUM_SECTIONS][3]={{0.0,0.02145,0.0}};
+float a[NUM_SECTIONS][3]={{1.0,-1.8323,0.8594}};
+float x[100], y[100], w[NUM_SECTIONS][2]={0};
+int main(void){
+ int i,section;
+ for(i=0;i<100;i++) x[i]=sin(2*3.14*2*i/100)+sin(2*3.14*30*i/100);
+ for(i=0;i<100;i++){
+  float input=x[i], wn, yn;
+  for(section=0;section<NUM_SECTIONS;section++){
+   wn=input-a[section][1]*w[section][0]-a[section][2]*w[section][1];
+   yn=b[section][0]*wn+b[section][1]*w[section][0]+b[section][2]*w[section][1];
+   w[section][1]=w[section][0]; w[section][0]=wn; input=yn;
+  }
+  y[i]=yn;
+ }
+ for(i=0;i<100;i++) printf("%f\n", y[i]);
+ return 0;
+}
+
+
+
+
+
+
+
+
+
+
+-------------------- Version 2 ---------------------------
+
+==============================
+Experiment 1: Basic Arithmetic Operations
+==============================
+C Program for Addition:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ long a=0x12345678;
+ long b=0x87654321;
+ long c=a+b;
+ printf("Addition (Hex): %lx\n", c);
+ return 0;
+}
+
+C Program for Multiplication:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ long a=0x12345678;
+ long b=0x87654321;
+ long c=a*b;
+ printf("Multiplication (Hex): %lx\n", c);
+ return 0;
+}
+
+C Program for Floating Point Addition:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ float a=123.321;
+ float b=332.125;
+ float c=a+b;
+ printf("Floating Point Addition: %f\n", c);
+ return 0;
+}
+
+C Program for Floating Point Multiplication:
+#include <stdio.h>
+#include <math.h>
+int main(void) {
+ float a=123.321;
+ float b=332.125;
+ float c=a*b;
+ printf("Floating Point Multiplication: %f\n", c);
+ return 0;
+}
+
+C Program for Sine Wave Generation:
+// The code prints sine wave sample values
+#include <stdio.h>
+#include <math.h>
+#define PI 3.14159265358979323846
+int main(void) {
+ for(int i=0;i<360;i+=10){
+     printf("%f\n", sin(i*PI/180));
+ }
+ return 0;
+}
+
+==============================
+Experiment 2: Linear and Circular Convolution
+==============================
+C Program for Linear Convolution:
+#include<stdio.h>
+#include <math.h>
+int y[9];
+int x[9]={1,2,3,4,5,6,0,0,0};
+int h[9]={1,2,3,4,0,0,0,0,0};
+int main(void){
+ int i,j;
+ for(i=0;i<9;i++){
+  y[i]=0;
+  for(j=0;j<=i;j++){
+   y[i]+=x[j]*h[i-j];
+  }
+  printf("y[%d]: %d\n", i, y[i]); // Added index for clarity
+ }
+ return 0;
+}
+
+C Program for Circular Convolution:
+#include<stdio.h>
+#include<math.h>
+int m=4, n=4;
+int x[4]={1,2,3,4};
+int h[4]={1,2,3,4};
+int y[4];
+int i,j,k,x2[4],a[4];
+int main(void){
+ if(m-n!=0){
+  if(m>n){
+   for(i=n;i<m;i++) h[i]=0;
+   n=m;
+  }
+  for(i=m;i<n;i++) x[i]=0;
+  m=n;
+ }
+ y[0]=0; a[0]=h[0];
+ for(j=1;j<n;j++) a[j]=h[n-j];
+ 
+ for(i=0;i<n;i++) y[0]+=x[i]*a[i];
+ for(k=1;k<n;k++){
+  y[k]=0;
+  for(j=1;j<n;j++) x2[j]=a[j-1];
+  x2[0]=a[n-1];
+  for(i=0;i<n;i++){
+   a[i]=x2[i];
+   y[k]+=x[i]*x2[i];
+  }
+ }
+ printf("Circular Convolution:\n");
+ for(i=0;i<n;i++) printf("%d\t",y[i]);
+ printf("\n");
+ return 0;
+}
+
+==============================
+Experiment 3: Discrete Fourier Transform (DFT)
+==============================
+#include <stdio.h>
+#include <math.h>
+#define PI 3.14159265358979323846
+float x[8]={1,1,2,0,1,2,0,1};
+float XR[8], XI[8], amplitude[8], phase[8];
+int N=8;
+int main(void){
+ int i,j;
+ for(j=0;j<N;j++){
+  XR[j]=XI[j]=0;
+  for(i=0;i<N;i++){
+   XR[j]+=x[i]*cos(2*PI*i*j/N);
+   XI[j]-=x[i]*sin(2*PI*i*j/N);
+  }
+  printf("DFT Bin K=%d: %f +i %f\n", j, XR[j],XI[j]);
+ }
+ for(i=0;i<N;i++){
+  amplitude[i]=sqrt(XR[i]*XR[i]+XI[i]*XI[i]);
+  phase[i]=atan2(XI[i],XR[i]);
+  printf("Amplitude K=%d: %f Phase=%f radians\n", i, amplitude[i], phase[i]);
+ }
+ return 0;
+}
+
+==============================
+Experiment 4: Fast Fourier Transform (FFT)
+==============================
+Decimation-in-Time FFT:
+#include<stdio.h>
+#include<math.h>
+double x[8]={1,1,2,0,1,2,0,1};
+double XR[8]={0}, XI[8]={0};
+// Twiddle factors W_8^k for k=0, 1, 2, 3
+double WR[4]={1.0, 0.707107, 0.0, -0.707107}; // Cos(2*PI*k/8)
+double WI[4]={0.0, -0.707107, -1.0, -0.707107}; // -Sin(2*PI*k/8)
+double amplitude[8], phase[8];
+int N=8;
+
+int main(void){
+ int i, j, k, len, len2, w_index;
+ double t_real, t_imag; // Temporary variables for butterfly
+
+ // 1. Bit-reversal initial reordering
+ XR[0]=x[0]; XR[1]=x[4]; XR[2]=x[2]; XR[3]=x[6]; 
+ XR[4]=x[1]; XR[5]=x[5]; XR[6]=x[3]; XR[7]=x[7];
+
+ // 2. Radix-2 DIT-FFT Stages (3 stages for N=8)
+ for(len=2; len<=N; len*=2) { // Butterfly size (2, 4, 8)
+  len2 = len/2; // Half-size
+  for(i=0; i<N; i+=len) { // Group start index
+   for(j=0; j<len2; j++) { // Within group
+    w_index = j * (4/len2); // Twiddle factor index 
+    
+    // Twiddle factor (W) computation: T = W * B
+    t_real = WR[w_index] * XR[i+j+len2] - WI[w_index] * XI[i+j+len2];
+    t_imag = WR[w_index] * XI[i+j+len2] + WI[w_index] * XR[i+j+len2];
+    
+    // Butterfly calculation: A' = A + T, B' = A - T
+    double sum1r = XR[i+j] + t_real;
+    double sum1i = XI[i+j] + t_imag;
+    double sum2r = XR[i+j] - t_real;
+    double sum2i = XI[i+j] - t_imag;
+
+    XR[i+j] = sum1r;
+    XI[i+j] = sum1i;
+    XR[i+j+len2] = sum2r;
+    XI[i+j+len2] = sum2i;
+   }
+  }
+ }
+
+ // 3. Output Amplitude and Phase
+ for(i=0;i<N;i++){
+  amplitude[i]=sqrt(XR[i]*XR[i]+XI[i]*XI[i]);
+  phase[i]=atan2(XI[i],XR[i]);
+  printf("FFT Bin K=%d: %f +i %f\n", i, XR[i], XI[i]);
+  printf("Amplitude K=%d: %f Phase=%f radians\n", i, amplitude[i], phase[i]);
+ }
+ return 0;
+}
+
+==============================
+Experiment 5: FIR and IIR Filter Design
+==============================
+C Program for FIR Low Pass Filter:
+#include <stdio.h>
+#include <math.h>
+// Example coefficients for a Low Pass Filter (M=51)
+float h[51]={
+ 0.0008, 0.0022, 0.0042, 0.0069, 0.0104, 0.0146, 0.0194, 0.0246, 0.0299, 0.0350,
+ 0.0396, 0.0435, 0.0465, 0.0484, 0.0493, 0.0493, 0.0484, 0.0465, 0.0435, 0.0396,
+ 0.0350, 0.0299, 0.0246, 0.0194, 0.0146, 0.0104, // Center coefficient (h[25])
+ 0.0146, 0.0194, 0.0246, 0.0299, 0.0350, 0.0396, 0.0435, 0.0465, 0.0484, 0.0493,
+ 0.0493, 0.0484, 0.0465, 0.0435, 0.0396, 0.0350, 0.0299, 0.0246, 0.0194, 0.0146,
+ 0.0104, 0.0069, 0.0042, 0.0022, 0.0008
+}; 
+float x[100], y[100]; 
+int main(void){
+ int i,j;
+ // Input: DC (5) + Stopband frequency (30Hz) + Passband frequency (2Hz)
+ for(i=0;i<100;i++)
+  x[i]=5+(2*sin(2*3.14*30*i/100))+(3*cos(2*3.14*2*i/100));
+ 
+ // Convolution (Filtering) operation
+ for(i=0;i<100;i++){
+  y[i]=0;
+  for(j=0;j<51;j++)
+   if(i-j>=0) y[i]+=h[j]*x[i-j];
+ }
+ 
+ for(i=0;i<100;i++) printf("%f\n", y[i]);
+ return 0;
+}
+
+C Program for IIR Low Pass Filter:
+#include <stdio.h>
+#include <math.h>
+#define NUM_SECTIONS 1
+// Numerator: b0, b1, b2
+float b[NUM_SECTIONS][3]={{0.02145, 0.0429, 0.02145}};
+// Denominator: 1, a1, a2 (a0 is 1)
+float a[NUM_SECTIONS][3]={{1.0, -1.8323, 0.8594}};
+float x[100], y[100], w[NUM_SECTIONS][2]={0};
+int main(void){
+ int i,section;
+ // Input: Passband (2Hz) + Stopband (30Hz)
+ for(i=0;i<100;i++) x[i]=sin(2*3.14*2*i/100)+sin(2*3.14*30*i/100);
+ for(i=0;i<100;i++){
+  float input=x[i], wn, yn;
+  for(section=0;section<NUM_SECTIONS;section++){
+   // Direct Form II Transposed implementation
+   wn=input-a[section][1]*w[section][0]-a[section][2]*w[section][1];
+   yn=b[section][0]*wn+b[section][1]*w[section][0]+b[section][2]*w[section][1];
+   
+   // Update delay elements
+   w[section][1]=w[section][0]; w[section][0]=wn; input=yn;
+  }
+  y[i]=yn;
+ }
+ for(i=0;i<100;i++) printf("%f\n", y[i]);
+ return 0;
+}
